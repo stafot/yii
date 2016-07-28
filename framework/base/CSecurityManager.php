@@ -581,7 +581,7 @@ class CSecurityManager extends CApplicationComponent
 		else
 			throw new CException(Yii::t('yii','CSecurityManager requires PHP mcrypt extension to be loaded in order to use data encryption feature.'));
 
-		$derivedKey=$this->substr(md5($key),0,mcrypt_enc_get_key_size($module));
+		$derivedKey=$this->substr($key===null ? md5($this->getEncryptionKey()) : $key,0,mcrypt_enc_get_key_size($module));
 		$ivSize=mcrypt_enc_get_iv_size($module);
 		$iv=$this->substr($data,0,$ivSize);
 		mcrypt_generic_init($module,$derivedKey,$iv);
