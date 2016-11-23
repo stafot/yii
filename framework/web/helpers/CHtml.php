@@ -604,7 +604,7 @@ class CHtml
 	 * @return string the generated input field
 	 * @see clientChange
 	 * @see inputField
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public static function colorField($name,$value='',$htmlOptions=array())
 	{
@@ -637,7 +637,7 @@ class CHtml
 	 * @return string the generated input field
 	 * @see clientChange
 	 * @see inputField
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public static function searchField($name,$value='',$htmlOptions=array())
 	{
@@ -721,7 +721,7 @@ class CHtml
 	 * @return string the generated input field
 	 * @see clientChange
 	 * @see inputField
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public static function dateTimeField($name,$value='',$htmlOptions=array())
 	{
@@ -738,7 +738,7 @@ class CHtml
 	 * @return string the generated input field
 	 * @see clientChange
 	 * @see inputField
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public static function dateTimeLocalField($name,$value='',$htmlOptions=array())
 	{
@@ -755,7 +755,7 @@ class CHtml
 	 * @return string the generated input field
 	 * @see clientChange
 	 * @see inputField
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public static function weekField($name,$value='',$htmlOptions=array())
 	{
@@ -1510,7 +1510,8 @@ EOD;
 	{
 		$realAttribute=$attribute;
 		self::resolveName($model,$attribute); // strip off square brackets if any
-		$htmlOptions['required']=$model->isAttributeRequired($attribute);
+		if (!isset($htmlOptions['required']))
+			$htmlOptions['required']=$model->isAttributeRequired($attribute);
 		return self::activeLabel($model,$realAttribute,$htmlOptions);
 	}
 
@@ -1684,7 +1685,7 @@ EOD;
 	 * @return string the generated input field
 	 * @see clientChange
 	 * @see activeInputField
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public static function activeDateTimeField($model,$attribute,$htmlOptions=array())
 	{
@@ -1704,7 +1705,7 @@ EOD;
 	 * @return string the generated input field
 	 * @see clientChange
 	 * @see activeInputField
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public static function activeDateTimeLocalField($model,$attribute,$htmlOptions=array())
 	{
@@ -1724,7 +1725,7 @@ EOD;
 	 * @return string the generated input field
 	 * @see clientChange
 	 * @see activeInputField
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public static function activeWeekField($model,$attribute,$htmlOptions=array())
 	{
@@ -1744,7 +1745,7 @@ EOD;
 	 * @return string the generated input field
 	 * @see clientChange
 	 * @see activeInputField
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public static function activeColorField($model,$attribute,$htmlOptions=array())
 	{
@@ -2766,6 +2767,7 @@ EOD;
 			'formnovalidate'=>1,
 			'hidden'=>1,
 			'ismap'=>1,
+			'itemscope'=>1,
 			'loop'=>1,
 			'multiple'=>1,
 			'muted'=>1,

@@ -1149,7 +1149,9 @@ abstract class CActiveRecord extends CModel
 	 * or an attribute value indexed by its name. If the latter, the record's
 	 * attribute will be changed accordingly before saving.
 	 * @throws CDbException if the record is new
-	 * @return boolean whether the update is successful
+	 * @return boolean whether the update is successful. Note that false is also returned if the saving
+	 * was successfull but no attributes had changed and the database driver returns 0 for the number
+	 * of updated records.
 	 */
 	public function saveAttributes($attributes)
 	{
@@ -1979,7 +1981,7 @@ class CBaseActiveRelation extends CComponent
 	 * String typed value can be used with JOINs for HAS_MANY and MANY_MANY relations, while array typed
 	 * value designed to be used only with MANY_MANY relations. First array element will be used for junction
 	 * table JOIN and second array element will be used for target table JOIN.
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public $joinOptions='';
 	/**
@@ -2020,8 +2022,10 @@ class CBaseActiveRelation extends CComponent
 			$criteria=$criteria->toArray();
 		if(isset($criteria['select']) && $this->select!==$criteria['select'])
 		{
-			if($this->select==='*')
+			if($this->select==='*'||$this->select===false)
 				$this->select=$criteria['select'];
+			elseif($criteria['select']===false)
+				$this->select=false;
 			elseif($criteria['select']!=='*')
 			{
 				$select1=is_string($this->select)?preg_split('/\s*,\s*/',trim($this->select),-1,PREG_SPLIT_NO_EMPTY):$this->select;
@@ -2100,7 +2104,7 @@ class CStatRelation extends CBaseActiveRelation
 	 * <li>Single scope: 'scopes'=>'scopeName'.</li>
 	 * <li>Multiple scopes: 'scopes'=>array('scopeName1','scopeName2').</li>
 	 * </ul>
-	 * @since 1.1.15
+	 * @since 1.1.16
 	 */
 	public $scopes;
 
@@ -2382,9 +2386,10 @@ class CActiveRecordMetaData
 		if(($table=$model->getDbConnection()->getSchema()->getTable($tableName))===null)
 			throw new CDbException(Yii::t('yii','The table "{table}" for active record class "{class}" cannot be found in the database.',
 				array('{class}'=>$this->_modelClassName,'{table}'=>$tableName)));
-		if($table->primaryKey===null)
+				
+		if(($modelPk=$model->primaryKey())!==null || $table->primaryKey===null)
 		{
-			$table->primaryKey=$model->primaryKey();
+			$table->primaryKey=$modelPk;
 			if(is_string($table->primaryKey) && isset($table->columns[$table->primaryKey]))
 				$table->columns[$table->primaryKey]->isPrimaryKey=true;
 			elseif(is_array($table->primaryKey))
