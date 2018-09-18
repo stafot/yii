@@ -179,12 +179,18 @@ class CProfileLogRoute extends CWebLogRoute
 		}
 
 		$entries=array_values($results);
-		$func=create_function('$a,$b','return $a[4]<$b[4]?1:0;');
-		usort($entries,$func);
+		usort($entries,[$this,'compare']);
 
 		$this->render('profile-summary',$entries);
 	}
 
+	private function compare($a, $b)
+    	{
+        	if ($a[4] < $b[4]) {
+            	return 1;
+        }
+        	return 0;
+    	}
 	/**
 	 * Aggregates the report result.
 	 * @param array $result log result for this code block
